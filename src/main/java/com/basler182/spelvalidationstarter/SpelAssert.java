@@ -1,4 +1,4 @@
-package eu.schk.spelvalidationstarter;
+package com.basler182.spelvalidationstarter;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

@@ -8,7 +8,7 @@
         <version>4.0.0</version>
         <relativePath/>
     </parent>
-    <groupId>eu.schk</groupId>
+    <groupId>com.basler182</groupId>
     <artifactId>spel-validation-starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spel-validation-starter</name>
@@ -35,5 +35,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub OWNER Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/Basler182/spel-validation-starter</url>
+        </repository>
+    </distributionManagement>
 
 </project>
