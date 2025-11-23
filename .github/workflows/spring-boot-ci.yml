@@ -21,6 +21,9 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
 
+    - name: Grant execute permission for gradlew
+      run: chmod +x mvnw
+
     - name: Build Application
       run: ./mvnw clean compile
 
