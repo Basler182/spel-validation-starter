@@ -4,6 +4,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,6 +37,15 @@ class SpelAssertTest {
 
         public String getParam() {
             return param;
+        }
+    }
+
+    static class CalendarService {
+        @SpelAssert(
+                value = "#args[0].isBefore(#args[1])",
+                message = "Start must be before End"
+        )
+        public void schedule(LocalDate start, LocalDate end) {
         }
     }
 
@@ -73,5 +83,29 @@ class SpelAssertTest {
         var violations = validator.validate(invalid);
         assertEquals(1, violations.size());
         assertEquals("param", violations.iterator().next().getPropertyPath().toString());
+    }
+
+    @Test
+    void testMethodValidation_Success() throws NoSuchMethodException {
+        CalendarService service = new CalendarService();
+        Method method = CalendarService.class.getMethod("schedule", LocalDate.class, LocalDate.class);
+        Object[] validArgs = { LocalDate.now(), LocalDate.now().plusDays(1) };
+
+        // For methods, we use validateParameters
+        var violations = validator.forExecutables().validateParameters(service, method, validArgs);
+
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    void testMethodValidation_Failure() throws NoSuchMethodException {
+        CalendarService service = new CalendarService();
+        Method method = CalendarService.class.getMethod("schedule", LocalDate.class, LocalDate.class);
+        Object[] invalidArgs = { LocalDate.now().plusDays(1), LocalDate.now() };
+
+        var violations = validator.forExecutables().validateParameters(service, method, invalidArgs);
+
+        assertEquals(1, violations.size());
+        assertEquals("Start must be before End", violations.iterator().next().getMessage());
     }
 }

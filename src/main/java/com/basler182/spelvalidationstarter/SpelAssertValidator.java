@@ -2,6 +2,8 @@ package com.basler182.spelvalidationstarter;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.constraintvalidation.SupportedValidationTarget;
+import jakarta.validation.constraintvalidation.ValidationTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.expression.BeanFactoryResolver;
@@ -13,6 +15,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 /**
  * Validator that evaluates a SpEL expression to validate an object.
  */
+@SupportedValidationTarget({ValidationTarget.ANNOTATED_ELEMENT, ValidationTarget.PARAMETERS})
 public class SpelAssertValidator implements ConstraintValidator<SpelAssert, Object> {
 
     private static final ExpressionParser PARSER = new SpelExpressionParser();
@@ -43,6 +46,10 @@ public class SpelAssertValidator implements ConstraintValidator<SpelAssert, Obje
 
         StandardEvaluationContext evaluationContext = new StandardEvaluationContext(value);
 
+        if (value instanceof Object[]) {
+            evaluationContext.setVariable("args", value);
+        }
+
         if (applicationContext != null) {
             evaluationContext.setBeanResolver(new BeanFactoryResolver(applicationContext));
         }
@@ -60,7 +67,9 @@ public class SpelAssertValidator implements ConstraintValidator<SpelAssert, Obje
 
         if (applyToField != null && !applyToField.isEmpty()) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate()).addPropertyNode(applyToField).addConstraintViolation();
+            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+                    .addPropertyNode(applyToField)
+                    .addConstraintViolation();
         }
 
         return false;
