@@ -5,16 +5,16 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.0</version>
+        <version>3.2.0</version>
         <relativePath/>
     </parent>
     <groupId>com.basler182</groupId>
-    <artifactId>spel-validation-starter</artifactId>
+    <artifactId>spelvalidationstarter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spel-validation-starter</name>
     <description>spel-validation-starter</description>
     <properties>
-        <java.version>25</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>

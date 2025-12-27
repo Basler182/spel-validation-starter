@@ -15,7 +15,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 /**
  * Validator that evaluates a SpEL expression to validate an object.
  */
-@SupportedValidationTarget({ValidationTarget.ANNOTATED_ELEMENT, ValidationTarget.PARAMETERS})
+@SupportedValidationTarget({ ValidationTarget.ANNOTATED_ELEMENT, ValidationTarget.PARAMETERS })
 public class SpelAssertValidator implements ConstraintValidator<SpelAssert, Object> {
 
     private static final ExpressionParser PARSER = new SpelExpressionParser();
@@ -34,7 +34,8 @@ public class SpelAssertValidator implements ConstraintValidator<SpelAssert, Obje
 
     /**
      * Validates the given value against the SpEL expression.
-     * @param value the object to validate
+     * 
+     * @param value   the object to validate
      * @param context the constraint validator context
      * @return true if the value is valid, false otherwise
      */
@@ -46,8 +47,14 @@ public class SpelAssertValidator implements ConstraintValidator<SpelAssert, Obje
 
         StandardEvaluationContext evaluationContext = new StandardEvaluationContext(value);
 
-        if (value instanceof Object[]) {
+        if (value instanceof Object[] args) {
             evaluationContext.setVariable("args", value);
+            String[] paramNames = SpelContextHolder.peekParameterNames();
+            if (paramNames != null && paramNames.length == args.length) {
+                for (int i = 0; i < paramNames.length; i++) {
+                    evaluationContext.setVariable(paramNames[i], args[i]);
+                }
+            }
         }
 
         if (applicationContext != null) {
