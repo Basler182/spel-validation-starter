@@ -78,20 +78,22 @@ public class RegistrationRequest {
 
 ### 4. Method Parameter Validation (Cross-Parameter)
 
-Validate relationships between method arguments. The arguments are available in the SpEL expression via the `#args` array (indexed by position).
+Validate relationships between method arguments. You can use the **parameter names** directly in your SpEL expression (e.g., `#startDateTime`).
+
+> **Note:** The `#args` array (e.g., `#args[1]`) is also still supported for legacy compatibility.
 
 ```java
 public class BookingService {
 
     @SpelAssert(
-            value = "#args[1].isBefore(#args[2]) && #args[1].plusDays(7).isAfter(#args[2])",
+            value = "#startDateTime.isBefore(#endDateTime) && #startDateTime.plusDays(7).isAfter(#endDateTime)",
             message = "Date range must be valid and less than 7 days",
             applyTo = "startDateTime"
     )
     public void getMeterValues(
             Long id, 
-            ZonedDateTime startDateTime, // #args[1]
-            ZonedDateTime endDateTime    // #args[2]
+            ZonedDateTime startDateTime,
+            ZonedDateTime endDateTime
     ) {
         // ...
     }
